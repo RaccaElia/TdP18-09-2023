@@ -42,21 +42,35 @@ class Model:
         self.costoBest = 0
         for nodo in self.grafo.nodes:
             self.ricorsione([nodo], N)
+        return self.soluzioneBest, self.costoBest
 
     def ricorsione(self, parziale, lunMax):
         if len(parziale) == lunMax:
             if parziale[0] == parziale[-1]:
-                if self.costoBest(parziale):
+                if self.isBest(parziale):
                     self.soluzioneBest = copy.deepcopy(parziale)
         else:
             for nodo in self.grafo.neighbors(parziale[-1]):
-                if self.soddisfaVincoli(parziale, nodo):
-                    parziale.add(nodo)
+                if self.soddisfaVincoli(parziale, nodo, lunMax):
+                    parziale.append(nodo)
                     self.ricorsione(parziale, lunMax)
                     parziale.pop()
 
-    def soddisfaVincoli(self, lista, nodo):
-        pass
+    def soddisfaVincoli(self, lista, nodo, N):
+        if len(lista) == N-1:
+            if nodo == lista[0]:
+                return True
+        else:
+            if nodo not in lista:
+                return True
+        return False
 
-    def costoBest(self, lista):
-        pass
+
+    def isBest(self, lista):
+        costo = 0
+        for i in range(len(lista)-1):
+            costo += self.grafo[lista[i]][lista[i+1]]["weight"]
+        if costo > self.costoBest:
+            self.costoBest = costo
+            return True
+        return False

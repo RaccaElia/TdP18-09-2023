@@ -30,8 +30,10 @@ class Controller:
 
     def handle_search(self, e):
         self._view.txtOut2.controls.clear()
-        N = int(self._view.txtSoglia)
+        N = int(self._view._txtSoglia.value)
         if N < 2:
             self._view.create_alert("vaffanculo")
         else:
-            self._model.trovaPercorso(N)
+            sol, costo = self._model.trovaPercorso(N)
+        self._view.txtOut2.controls.append(ft.Text(f"costo: {costo}, soluzione: {sol}"))
+        self._view.update_page()
